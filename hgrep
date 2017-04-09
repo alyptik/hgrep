@@ -33,9 +33,13 @@ my $flag = 0;
 	no strict;
 	no warnings;
 
-	print "$usage\n" if $h;
-	printf "hgrep v%vd\n", $version if $v;
-	exit if ($h || $v);
+	# print "$usage\n" if $h;
+	# printf "hgrep v%vd\n", $version if $v;
+	# exit if ($h || $v);
+
+	print "$usage\n" if ($h || ${-help});
+	printf "hgrep v%vd\n", $version if ($v || ${-version});
+	exit if ($h || $v || ${-help} || ${-version});
 
 	map { $_ = qr/$_/ } @query if $r;
 	map { $_ = quotemeta $_ } @query unless $r;
