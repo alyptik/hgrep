@@ -1,3 +1,7 @@
+*.\~
+*.swn
+*.swo
+*.swp
 /blib/
 /.build/
 _build/
