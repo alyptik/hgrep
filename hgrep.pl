@@ -18,8 +18,7 @@ my $version = v0.1;
 my @query = @ARGV;
 my @files;
 my $num;
-# my @matches;
-# my $total;
+my $color;
 
 # Parse command line switches
 {
@@ -31,6 +30,8 @@ my $num;
 	map { $_ = qr/$_/ } @query if $r;
 	map { $_ = quotemeta $_ } @query unless $r;
 	$num = $n // 10;
+	$color = $c // 1;
+	$color = 0 if $color =~ m/^(?:0|no?|false|never)$/i;
 }
 
 print "# of matches that will be printed: ".$num."\n"."Queries: \"".join("\" \"", @query)."\"\n";
@@ -43,19 +44,19 @@ exit;
 sub wanted {
 	my ($dev, $ino, $mode, $nlink, $uid, $gid);
 	(($dev, $ino, $mode, $nlink, $uid, $gid) = lstat($_)) &&
-		-f _ && /^.*\.h\z/s && push @files, $name &&
+		-f _ && /^.*\.h\z/s &&
+		# TODO: Finish color handling
 		map {
 			my $cur = $_;
-			fgrep {
-				$num-- && print $_ if m/$cur/;
+			fdo {
+				if (m/$cur/) {
+					$num--;
+					s/(?=$cur)/`tput setaf 9 && tput bold`/eg &&
+					s/(?<=$cur)/`tput sgr0`/eg if $color;
+					print;
+				}
 				exit if $num == 0;
 			} $name;
 		} @query;
-		# TODO: Get colors working
-		# map { my $cur = $_;
-		#         fgrep {
-		#                 s/$cur/$'\033'[31m$&$'\033'[0m/g && print $_ if m/$cur/
-		#         } $name
-		# } @query;
 }
 
