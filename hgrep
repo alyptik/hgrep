@@ -13,8 +13,13 @@ use vars qw/*name *dir *prune/;
 *prune  = *File::Find::prune;
 sub wanted;
 
-my $usage = "Usage: hgrep <query>\n";
-my $version = v0.1;
+my $usage = "Usage: hgrep -hrv -n=\"#\" -c=\"(y|n)\" <query>
+  -h:		Print help
+  -r:		Parse query as a regular expression
+  -v:		Show version
+  -n=\"#\":	Number of matches to print
+  -c=\"(y|n)\":	Colorize output (default: enabled)";
+my $version = v0.1.1;
 my @query = @ARGV;
 my @files;
 my $num;
@@ -25,8 +30,9 @@ my $color;
 	no strict;
 	no warnings;
 
-	print $usage if $h;
-	printf "hgrep %vd\n", $version if $v;
+	print "$usage\n" if $h;
+	printf "hgrep v%vd\n", $version if $v;
+	exit if ($h || $v);
 	map { $_ = qr/$_/ } @query if $r;
 	map { $_ = quotemeta $_ } @query unless $r;
 	$num = $n // 10;
