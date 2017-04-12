@@ -17,14 +17,14 @@ sub wanted;
 my (@files, $color, $context, $idx, $num);
 my $usage = "
 Usage: hgrep -hrv -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
-  -h:		Print help
+  -h --help:	Print help
   -r:		Parse query as a regular expression
-  -v:		Show version
+  -v --version:	Show version
   -c=\"(y|n)\":	Colorize output (default: enabled)
   -C=\"#\":	Number of after-context lines (default: 1)
   -n=\"#\":	Number of matches to print (default: 10)
 ";
-my $version = v0.1.2;
+my $version = v0.1.3;
 my @query = @ARGV;
 my $flag = 0;
 
@@ -32,10 +32,6 @@ my $flag = 0;
 {
 	no strict;
 	no warnings;
-
-	# print "$usage\n" if $h;
-	# printf "hgrep v%vd\n", $version if $v;
-	# exit if ($h || $v);
 
 	print "$usage\n" if ($h || ${-help});
 	printf "hgrep v%vd\n", $version if ($v || ${-version});
