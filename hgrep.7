@@ -4,26 +4,29 @@
 hgrep \- A simple Perl script to quickly search header files in /usr/include using keywords or regular expressions.
 .SH SYNOPSIS
 .B hgrep
-\fI\,-hrv -c="(y|n)" -C="#" -n="#" <query>\/\fR
+\fI\,-h -i -r -v -c="(y|n)" -C="#" -n="#" <query>\/\fR
 .SH DESCRIPTION
 .SS USAGE
 .TP
-\fB\-h --help\fR:
+\fB\-h \-\-help\fR:
 Print help
+.TP
+\fB\-i\fR:
+Case\-insensitive matching (works both with and without \-r)
 .TP
 \fB\-r\fR:
 Parse query as a regular expression
 .TP
-\fB\-v --version\fR:
+\fB\-v \-\-version\fR:
 Show version
 .TP
-\fB\-c=\fR"(y|n)":
+\fB\-c="(y|n)"\fR:
 Colorize output (default: enabled)
 .TP
-\fB\-C=\fR"#":
+\fB\-C="#"\fR:
 Number of after\-context lines (default: 1)
 .TP
-\fB\-n=\fR"#":
+\fB\-n="#"\fR:
 Number of matches to print (default: 10)
 .SH "SEE ALSO"
 The full documentation for

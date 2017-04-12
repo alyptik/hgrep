@@ -10,8 +10,9 @@ Install them with `cpan File::Grep File::Find`
 You can then run the script with:
 
 ```bash
-./hgrep -hrv -c="(y|n)" -C="#" -n="#" <query>
+./hgrep -h -i -r -v -c="(y|n)" -C="#" -n="#" <query>
   -h --help:	Print usage information
+  -i:		Case-insensitive matching (works both with and without -r)
   -r:		Parse query as a regular expression
   -v --version:	Show version
   -c="(y|n)":   Colorize output (default: enabled)
