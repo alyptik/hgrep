@@ -2,10 +2,12 @@
 
 use strict;
 use warnings;
+use feature qw( say );
 use File::Grep qw( fgrep fmap fdo );
-use File::Find ();
+use File::Find qw( find );
 # Set the variable $File::Find::dont_use_nlink if you're using AFS,
 # since AFS cheats.
+
 # for the convenience of &wanted calls, including -eval statements:
 use vars qw( *name *dir *prune );
 *name   = *File::Find::name;
@@ -15,9 +17,9 @@ use vars qw( *name *dir *prune );
 sub wanted;
 
 my (@files, $color, $context, $idx, $num);
-my ($flag, $version) = (0, v0.2.0);
-my @query = @ARGV;
-my $usage = "
+my ($flag, $version)	= (0, v0.2.0);
+my @query		= @ARGV;
+my $usage		= "
 Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
   -h --help:	Print help
   -i:		Case-insensitive matching (works both with and without -r)
@@ -33,30 +35,30 @@ Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
 	no strict;
 	no warnings;
 
-	print "$usage\n" if ($h || ${-help});
-	printf "hgrep v%vd\n", $version if ($v || ${-version});
-	exit if ($h || $v || ${-help} || ${-version});
+	print "$usage\n"			if ($h || ${-help});
+	printf "hgrep v%vd\n", $version		if ($v || ${-version});
+	exit					if ($h || $v || ${-help} || ${-version});
 
-	map { $_ = quotemeta $_ } @query if !$r;
-	map { $_ = qr/$_/ } @query if ($r && !$i);
-	map { $_ = qr/$_/i } @query if $i;
+	map { $_ = quotemeta $_ } @query	unless $r;
+	map { $_ = qr/$_/ } @query		if ($r && !$i);
+	map { $_ = qr/$_/i } @query		if $i;
 
 	$num = $n // 10;
-	$num = 10 if ($num =~ m/[^0-9]/ || $num < 0);
+	$num = 10				if ($num =~ m/[^0-9]/ || $num < 0);
 
 	$color = $c // 1;
-	$color = 0 if $color =~ m/^(?:0|no?|false|never)$/i;
+	$color = 0				if $color =~ m/^(?:0|no?|false|never)$/i;
 
 	$context = $idx = $C // 1;
-	$context = $idx = 1 if ($context =~ m/[^0-9]/ || $context < 0);
+	$context = $idx = 1			if ($context =~ m/[^0-9]/ || $context < 0);
 }
 
-print "\n"."Searching for: \"".join("\" \"", @query)."\"\n";
-print "# of matches that will be printed: $num\n";
-print "# of after-context lines that will be printed: $context\n\n";
+say "\nSearching for: \"".join("\" \"", @query)."\"";
+say "# of matches that will be printed: $num";
+say "# of after-context lines that will be printed: $context\n";
 
 # Traverse desired filesystems
-File::Find::find({wanted => \&wanted}, '/usr/include');
+find({wanted => \&wanted}, '/usr/include');
 exit;
 
 sub wanted {
