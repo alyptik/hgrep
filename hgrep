@@ -16,8 +16,6 @@ sub wanted;
 
 my (@files, $color, $context, $idx, $num);
 my ($flag, $version) = (0, v0.2.0);
-# Setup color escapes with tput
-my ($highlight, $reset) = (`tput bold && tput setaf 9`, `tput sgr0`);
 my @query = @ARGV;
 my $usage = "
 Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
@@ -70,8 +68,8 @@ sub wanted {
 			my $cur = $_;
 			fdo {
 				if (m/$cur/ || $flag) {
-					# Add color if switch is set
-					s/($cur)/$highlight$1$reset/g if $color;
+					# Setup color escapes with tput
+					s/($cur)/`tput bold && tput setaf 9`.$1.`tput sgr0`/eg if $color;
 					print if (m/$cur/ || ($flag && $context > 0));
 					# Don't count blank lines toward context
 					$idx-- unless m/^$/;
