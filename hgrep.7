@@ -8,26 +8,21 @@ hgrep \- A simple Perl script to quickly search header files in /usr/include usi
 .SH DESCRIPTION
 .SS USAGE
 .TP
-\fB\-h \-\-help\fR:
-Print help
+\fB\-h \-\-help\fR:		Print help
 .TP
-\fB\-i\fR:
-Case\-insensitive matching (works both with and without \-r)
+\fB\-i\fR:			Case\-insensitive matching (works both with and without \-r)
 .TP
-\fB\-r\fR:
-Parse query as a regular expression
+\fB\-r\fR:			Parse query as a regular expression
 .TP
-\fB\-v \-\-version\fR:
-Show version
+\fB\-v \-\-version\fR:		Show version
 .TP
-\fB\-c="(y|n)"\fR:
-Colorize output (default: enabled)
+\fB\-w \-\-word\fR:		Only show whole wor-matches (each end of query matches word boundaries)
 .TP
-\fB\-C="#"\fR:
-Number of after\-context lines (default: 1)
+\fB\-c=(y|n)\fR:		Colorize output (default: enabled)
 .TP
-\fB\-n="#"\fR:
-Number of matches to print (default: 10)
+\fB\-C=[num]\fR:		Number of after\-context lines (default: 1)
+.TP
+\fB\-n=[num]\fR:		Number of matches to print (default: 10)
 .SH "SEE ALSO"
 The full documentation for
 .B hgrep

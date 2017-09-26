@@ -19,16 +19,15 @@ sub wanted;
 my (@files, $color, $context, $idx, $num);
 my ($flag, $version)	= (0, v0.2.0);
 my @query		= @ARGV;
-my $usage		= "
-Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
-	-h --help:	Print help
-	-i:		Case-insensitive matching (works both with and without -r)
-	-r:		Parse query as a regular expression
-	-w:		Only show whole word-matches (where each end of query matches word boundries)
-	-v --version:	Show version
-	-c=\"(y|n)\":	Colorize output (default: enabled)
-	-C=\"#\":	Number of after-context lines (default: 1)
-	-n=\"#\":	Number of matches to print (default: 10)
+my $usage		= "Usage: hgrep -h -i -r -v -C=(y|n) -c=[num] -n=[num] <query>
+	-h,--help:		Print help
+	-i:			Case-insensitive matching (works both with and without -r)
+	-r:			Parse query as a regular expression
+	-w,--word:		Only show whole word-matches (each end of query matches word boundaries)
+	-v,--version:		Show version
+	-C=(y|n):		Colorize output (default: enabled)
+	-c=[num]:		Number of after-context lines (default: 1)
+	-n=[num]:		Number of matches to print (default: 10)
 ";
 
 # Parse command line switches
@@ -42,17 +41,17 @@ Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
 
 	map { $_ = quotemeta $_ } @query	unless $r;
 	map { $_ = qr/$_/ } @query		if ($r && !$i);
-	map { $_ = qr/$_/i } @query		if (!$w && $i);
-	map { $_ = qr/\b$_\b/ } @query		if ($w && !$i);
-	map { $_ = qr/\b$_\b/i } @query		if ($w && $i);
+	map { $_ = qr/$_/i } @query		if (!($w || ${-word}) && $i);
+	map { $_ = qr/\b$_\b/ } @query		if (($w || ${-word}) && !$i);
+	map { $_ = qr/\b$_\b/i } @query		if (($w || ${-word}) && $i);
 
 	$num = $n // 10;
 	$num = 10				if ($num =~ m/[^0-9]/ || $num < 0);
 
-	$color = $c // 1;
+	$color = $C // 1;
 	$color = 0				if $color =~ m/^(?:0|no?|false|never)$/i;
 
-	$context = $idx = $C // 1;
+	$context = $idx = $c // 1;
 	$context = $idx = 1			if ($context =~ m/[^0-9]/ || $context < 0);
 }
 
