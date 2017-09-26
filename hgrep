@@ -21,13 +21,14 @@ my ($flag, $version)	= (0, v0.2.0);
 my @query		= @ARGV;
 my $usage		= "
 Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
-  -h --help:	Print help
-  -i:		Case-insensitive matching (works both with and without -r)
-  -r:		Parse query as a regular expression
-  -v --version:	Show version
-  -c=\"(y|n)\":	Colorize output (default: enabled)
-  -C=\"#\":	Number of after-context lines (default: 1)
-  -n=\"#\":	Number of matches to print (default: 10)
+	-h --help:	Print help
+	-i:		Case-insensitive matching (works both with and without -r)
+	-r:		Parse query as a regular expression
+	-w:		Only show whole word-matches (where each end of query matches word boundries)
+	-v --version:	Show version
+	-c=\"(y|n)\":	Colorize output (default: enabled)
+	-C=\"#\":	Number of after-context lines (default: 1)
+	-n=\"#\":	Number of matches to print (default: 10)
 ";
 
 # Parse command line switches
@@ -35,13 +36,15 @@ Usage: hgrep -h -i -r -v -c=\"(y|n)\" -C=\"#\" -n=\"#\" <query>
 	no strict;
 	no warnings;
 
-	print "$usage\n"			if ($h || ${-help});
+	print "$usage\n"			if ($h || ${-help} || join "", @ARGV == "");
 	printf "hgrep v%vd\n", $version		if ($v || ${-version});
-	exit					if ($h || $v || ${-help} || ${-version});
+	exit					if ($h || $v || ${-help} || ${-version} || join "", @ARGV == "");
 
 	map { $_ = quotemeta $_ } @query	unless $r;
 	map { $_ = qr/$_/ } @query		if ($r && !$i);
-	map { $_ = qr/$_/i } @query		if $i;
+	map { $_ = qr/$_/i } @query		if (!$w && $i);
+	map { $_ = qr/\b$_\b/ } @query		if ($w && !$i);
+	map { $_ = qr/\b$_\b/i } @query		if ($w && $i);
 
 	$num = $n // 10;
 	$num = 10				if ($num =~ m/[^0-9]/ || $num < 0);
